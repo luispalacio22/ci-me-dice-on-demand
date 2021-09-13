@@ -4,4 +4,5 @@ before_install:
       env: python Procfile
 install:
   - pip install -r requirements.txt
-script: python3 tests/test_dice.py || python tests/test_dice.py
+script:
+  - pytest
