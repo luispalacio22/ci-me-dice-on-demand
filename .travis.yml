@@ -1,5 +1,17 @@
 language: python
 install:
-  - pip install -r requirements.txt
-script:
-  - python -m pytest -v tests/test_dice.py
+- pip install -r requirements.txt
+jobs:
+  include:
+  - stage: unit tests
+    script: python -m pytest -v tests/test_dice.py
+  - stage: deploy to staging
+    deploy:
+      provider: heroku
+      app: on-demand-stage
+      api_key: "$HEROKU_API_KEY"
+  - stage: deploy to production
+    deploy:
+      provider: heroku
+      app: on-demand-prod
+      api_key: "$HEROKU_API_KEY"
