@@ -1,17 +1,22 @@
 language: python
 install:
 - pip install -r requirements.txt
-script: python -m pytest -v tests/test_dice.py
-deploy:
-- provider: heroku
-  api_key: "$HEROKU_AUTH_KEY"
-    #secure: 
-  app: on-demand-stage  
-  on:
-    branch: main
-- provider: heroku
-  api_key: "$HEROKU_AUTH_KEY"
-    #secure: "$HEROKU_AUTH_TOKEN"
-  app: on-demand-prod
-  on:
-    branch: main
+jobs:
+  include:
+    - stage: unit tests
+      script: python -m pytest -v tests/test_dice.py
+    - stage: deploy to staging
+      deploy: &heroku
+        provider: heroku
+        app: on-demand-staging  
+        api_key: $HEROKU_AUTH_TOKEN
+        on:
+          branch: main
+    - stage: test staging
+      script: 'curl http://on-demand-staging.herokuapp.com'
+    - stage: deploy to production
+      deploy:
+        <<: *heroku
+        app: on-demand-prod
+    - stage: test production
+      script: 'curl http://on-demand-prod.herokuapp.com'
