@@ -10,7 +10,12 @@ jobs:
       deploy: &heroku
         provider: heroku
         app: on-demand-staging  
-        api_key: $HEROKU_AUTH_TOKEN
+        api_key: 
+          secure: aAKnesBoumGztfoFpG3FwXp2Iu2t7yWUpKO75ZIWPxmgouu/StWUFdwqMcKncZDRwZTXFDExdj5N/UKYDWGPE8DB2gNc3nr0jcqfyIPS1HlCd2cXwQUvxhhaj/+x+rXs/jaHawZ36pNh8KvutdNBsOIOcU5/GnaJgfVHtJvtvEcCKw7NA2S/
+G2YtIPEj1JQwg7u6x0NVPU44V2nv8ZHF9zm/jdLr2EIbPx/74C9r4+E6VmLAtE0IFlMj7oIT06QrBLYbCSAvxKGmuNYC+7HoCQT82lZAU1b5/lSVUevzb78kcRok2gkiJioGb0YuWyJQhRQUhTZtj/6hKprlPE75i1MsQXl7PHRUGUUUX6C6GcF2B1e9efoZ
+XA5h6ljpFgfVQPdf+sqgVBc779sPXnB2DIhPSv7zr+7F+/NL219xbNW2aY4IxrA3LxsHP1bOtVHjmGzchJFPkhySBEUGe0lJ+5GEh/R/bLWM+qPP9qJpWh3CBQRedYkO1Mg96WusVOO7X8v21BrJTobequj22bikkySZs+0q8Q7yBd4CQPiu615/JixYyRog
+RLg/wuB7zY+71EVGWUvPq+SEOfi2Y0xZ4YwMetIIs+U3RXTemAuUBmm7cpVUE/FsUr+mq0b5G2ABlLbnVoessiJeI9DfEvTJak5QNEQU1idPAkaN/maHlwA=
+
         on:
           branch: main
     - stage: test staging
