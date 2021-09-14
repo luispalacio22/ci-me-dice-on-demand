@@ -4,14 +4,14 @@ install:
 script: python -m pytest -v tests/test_dice.py
 deploy:
 - provider: heroku
-  api_key: 
-    secure: "$HEROKU_AUTH_KEY"
+  api_key: "$HEROKU_AUTH_KEY"
+    #secure: 
   app: on-demand-stage  
   on:
     branch: main
 - provider: heroku
-  api_key: 
-    secure: "$HEROKU_AUTH_TOKEN"
+  api_key: "$HEROKU_AUTH_KEY"
+    #secure: "$HEROKU_AUTH_TOKEN"
   app: on-demand-prod
   on:
     branch: main
