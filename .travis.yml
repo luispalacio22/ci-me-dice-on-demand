@@ -6,7 +6,7 @@ jobs:
   - stage: unit tests
     script: python -m pytest -v tests/test_dice.py
   - stage: deploy to staging
-    script: python -m pytest -v tests/test_dice.py
+    script: skip
     deploy:
       provider: heroku
       app: on-demand-stage
@@ -17,7 +17,7 @@ jobs:
   - stage: test staging
     script: curl http://on-demand-stage.herokuapp.com
   - stage: deploy to production
-    scrpt: python -m pytest -v tests/test_dice.py
+    script: skip
     deploy:
       provider: heroku
       app: on-demand-prod
