@@ -14,14 +14,16 @@ jobs:
   - stage: unit tests
     script: python -m pytest -v tests/test_dice.py
   - stage: deploy to staging
-    script: skip
+    script: 
+      - docker build -t $DOCKER_USERNAME/$HEROKU_APP_NAME .
+      - docker tag $DOCKER_USERNAME/$HEROKU_APP_NAME registry.heroku.com/$HEROKU_APP_NAME/web
     deploy:
       api_key: "$HEROKU_AUTH_TOKEN"
       provider: script
       script:
           # push to dockerhub & heroku
-          - docker push $DOCKER_USERNAME/$HEROKU_APP_NAME
-          - docker push registry.heroku.com/$HEROKU_APP_NAME/web
+          - docker push $DOCKER_USERNAME/$HEROKU_APP_NAME;
+          - docker push registry.heroku.com/$HEROKU_APP_NAME/web;
           - heroku container:release web --app $HEROKU_APP_NAME
       on:
         branch: main
