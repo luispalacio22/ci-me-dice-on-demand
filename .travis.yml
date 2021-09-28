@@ -24,7 +24,7 @@ jobs:
           # push to dockerhub & heroku
           docker push $DOCKER_USERNAME/$HEROKU_APP_NAME;
           docker push registry.heroku.com/$HEROKU_APP_NAME/web;
-          heroku container:release web --app $HEROKU_APP_NAME
+          HEROKU_API_KEY=$HEROKU_API_KEY heroku container:release web --app $HEROKU_APP_NAME
       on:
         branch: main
 notifications:
