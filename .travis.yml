@@ -1,4 +1,12 @@
 language: python
+services:
+  - docker
+before_install:
+  # install heroku CLI
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+  # login to docker registries (dockerhub + heroku)
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password=stdin registry.heroku.com
 install:
 - pip install -r requirements.txt
 jobs:
@@ -8,23 +16,15 @@ jobs:
   - stage: deploy to staging
     script: skip
     deploy:
-      provider: heroku
-      app: on-demand-stage
-      api_key:  "$HEROKU_AUTH_TOKEN"
-        #secure: aAKnesBoumGztfoFpG3FwXp2Iu2t7yWUpKO75ZIWPxmgouu/StWUFdwqMcKncZDRwZTXFDExdj5N/UKYDWGPE8DB2gNc3nr0jcqfyIPS1HlCd2cXwQUvxhhaj/+x+rXs/jaHawZ36pNh8KvutdNBsOIOcU5/GnaJgfVHtJvtvEcCKw7NA2S/G2YtIPEj1JQwg7u6x0NVPU44V2nv8ZHF9zm/jdLr2EIbPx/74C9r4+E6VmLAtE0IFlMj7oIT06QrBLYbCSAvxKGmuNYC+7HoCQT82lZAU1b5/lSVUevzb78kcRok2gkiJioGb0YuWyJQhRQUhTZtj/6hKprlPE75i1MsQXl7PHRUGUUUX6C6GcF2B1e9efoZXA5h6ljpFgfVQPdf+sqgVBc779sPXnB2DIhPSv7zr+7F+/NL219xbNW2aY4IxrA3LxsHP1bOtVHjmGzchJFPkhySBEUGe0lJ+5GEh/R/bLWM+qPP9qJpWh3CBQRedYkO1Mg96WusVOO7X8v21BrJTobequj22bikkySZs+0q8Q7yBd4CQPiu615/JixYyRogRLg/wuB7zY+71EVGWUvPq+SEOfi2Y0xZ4YwMetIIs+U3RXTemAuUBmm7cpVUE/FsUr+mq0b5G2ABlLbnVoessiJeI9DfEvTJak5QNEQU1idPAkaN/maHlwA=
-      on: &2
-        branch: main
-  - stage: test staging
-    script: curl http://on-demand-stage.herokuapp.com
-  - stage: deploy to production
-    script: skip
-    deploy:
-      provider: heroku
-      app: on-demand-prod
       api_key: "$HEROKU_AUTH_TOKEN"
-      on: *2
-  - stage: test production
-    script: curl http://on-demand-prod.herokuapp.com
+      provider: script
+      script:
+          # push to dockerhub & heroku
+          docker push $DOCKER_USERNAME/$HEROKU_APP_NAME
+          docker push registry.heroku.com/$HEROKU_APP_NAME/web
+          heroku container:release web --app $HEROKU_APP_NAME
+      on:
+        branch: main
 notifications:
   slack:
     secure: F0Lp7peA3VpI/fU9pIxoXjP6ZNRq3ksQ05qeJzRQ1vL4cMDEUkoDa/vlZmwQzZ5XJlPAZjjQRBV3qATzGaufaY3OQSzqcMq/1ZdE+Wv6qVOry1d94ptFhzWgpvCqq0WwKeHKgYGaetzaIhtDu5D7LC3iNHqdAnBk4lgApK/9OZjYVSe3TZA5hHG+P+Kym+MLqI2dv3SfTAov8WAMlILkD3nrL1vOX1TJ/QX8sSeph/MLOKs/YX8+GBg3uxBmhMgm905y3khLH9nrfTHkHBlj85Rx1BhJlf5LOWmyL9DJTxAhsl4nHBLqeDUS3/qin8Sgv9INaZyELiP2+gQ2yqBMrkX1ZZDkhJXaMCdE/lilUPj0UDW9Mo5IKsdLLaibtVR3OXXD1rpNs3g/OOGf1b6wesGHmHVW9mc5rY0NNlDk/LsA+u1ARNEsT25YuFEffQaam2+RjFWCCG4PS9yNOxUCpmfOEya9qL5yXBmNIHOvCBV8IM+Pr6A9gpghNv6RxBmoGyzvIIVcDfL8XnCpgLSF4jK67HmfO0Xoh4Xz5RCoW6dWWyj4CxqN/rRVVRoMFISXESG2giS9SzXnWA8eAbZaTse/ZZArjJhcdTVRVEg53GO0LumE//5fbY+ruxreOJssvlAZE6dTwHO9afNSuMRkNE8nHRm0y3gz/NItwPhFUK8=
