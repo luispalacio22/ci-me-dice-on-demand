@@ -3,4 +3,5 @@ WORKDIR /flaskapp
 COPY . .
 RUN pip install -r requirements.txt && pip install waitress
 #CMD ["waitress-serve","--port=5000","app:app"]
-CMD [ "app.py" ]
+ENTRYPOINT ["flask"]
+CMD ["run","--host=0.0.0.0" ]
